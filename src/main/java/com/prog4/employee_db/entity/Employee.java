@@ -54,12 +54,9 @@ public class Employee {
     @OneToMany
     private List<PhoneNumber> phoneNumbers;
 
-    @Transient
-    private int age;
     @PrePersist
     public void generatedRegistrationNbr(){
         this.registrationNbr = "EMP-" + UUID.randomUUID();
-        age = ConvertAge.exactAge(this.getDateOfBirth(), null);
     }
 
     // to update form
@@ -69,5 +66,11 @@ public class Employee {
     private String formattedOutDate;
     @Transient
     private String birthDay;
+    @Transient
+    private int age;
+    @PostLoad
+    public void loadAge(){
+        age = ConvertAge.exactAge(this.getDateOfBirth(), null);
+    }
 }
 
