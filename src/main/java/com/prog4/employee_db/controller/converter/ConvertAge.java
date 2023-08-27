@@ -14,10 +14,10 @@ public class ConvertAge {
         if (currentDate == null) {
             currentDate = LocalDate.now();
 
-        if (birthDate == null) {
-            return 0;
+            if (birthDate == null) {
+                return 0;
+            }
         }
         return Math.toIntExact(ChronoUnit.YEARS.between(birthDate, currentDate));
-
     }
 }
