@@ -1,0 +1,54 @@
+<div class="modalA" id="myModal" tabindex="-1" role="dialog" aria-labelledby="" aria-hidden="true">
+  <div class="modal-dialog" role="document">
+    <div class="modal-content">
+      <div class="modal-body">
+        <div class="modal-body">
+          <form th:action="@{/employees/filter}" method="get">
+            <label for="lastName">Last Name:</label>
+            <input type="text" id="lastName" name="lastName" th:value="${param.lastName}"/>
+
+            <label for="firstName">First Name:</label>
+            <input type="text" id="firstName" name="firstName" th:value="${param.firstName}"/>
+
+            <label for="sex">Sex:</label>
+            <select id="sex" name="sex">
+              <option value="">-- All --</option>
+              <option value="M" th:selected="${param.sex == 'M'}">Male</option>
+              <option value="F" th:selected="${param.sex == 'F'}">Female</option>
+            </select>
+
+            <label for="postName">Post Name:</label>
+            <input type="text" id="postName" name="postName" th:value="${param.postName}"/>
+
+            <label for="minHireDate">Min Hire Date:</label>
+            <input type="date" id="minHireDate" name="minHireDate" th:value="${param.minHireDate}"/>
+
+            <label for="maxHireDate">Max Hire Date:</label>
+            <input type="date" id="maxHireDate" name="maxHireDate" th:value="${param.maxHireDate}"/>
+
+            <label for="minLeaveDate">Min Leave Date:</label>
+            <input type="date" id="minLeaveDate" name="minLeaveDate" th:value="${param.minLeaveDate}"/>
+
+            <label for="maxLeaveDate">Max Leave Date:</label>
+            <input type="date" id="maxLeaveDate" name="maxLeaveDate" th:value="${param.maxLeaveDate}"/>
+
+            <label for="phoneNumber">Code Pays:</label>
+            <select id="phoneNumber" name="phoneNumber">
+              <option value="">-- All --</option>
+              <option value="+261" th:selected="${param.phoneNumber == '+261'}">Madagascar (+261)</option>
+              <option value="+33" th:selected="${param.phoneNumber == '+33'}">France (+33)</option>
+            </select>
+
+            <label for="sort">Sort:</label>
+            <select id="sort" name="sort">
+              <option value="asc" th:selected="${param.sort == 'asc'}">Ascending</option>
+              <option value="desc" th:selected="${param.sort == 'desc'}">Descending</option>
+            </select>
+            <button type="button" class="btn btn-secondary" data-dismiss="modal" onclick="hideModal()">Close</button>
+            <button type="submit" class="btn btn-primary">Apply Filters</button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

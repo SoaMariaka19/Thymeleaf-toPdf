@@ -1,0 +1,127 @@
+<!DOCTYPE html>
+<html lang="en"
+      xmlns:sec="http://www.thymeleaf.org/extras/spring-security"
+>
+<head>
+    <meta charset="UTF-8">
+    <title>Update Employee</title>
+    <link rel="stylesheet" th:href="@{/style.css}" sec:authorize="isFullyAuthenticated()">
+    <link rel="stylesheet" th:href="@{/profileCss.css}" >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap" rel="stylesheet">
+</head>
+<body>
+<div th:replace="/index"></div>
+<h1>Update Employee</h1>
+<form th:object="${newEmployee}" th:action="@{/employees/update}" method="post">
+    <label>
+        <input type="text" th:field="${newEmployee.id}" hidden>
+    </label>
+    <label for="firstName">First Name:</label>
+    <input type="text" id="firstName" th:field="*{firstName}" required/>
+    <br/>
+
+    <label for="lastName">Last Name:</label>
+    <input type="text" id="lastName" th:field="*{lastName}" required/>
+    <br/>
+
+    <label for="dateOfBirth">Date of Birth:</label>
+    <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}" required pattern="yyyy-MM-dd"/>
+    <br/>
+
+
+    <label for="sex">Sex:</label>
+    <select id="sex" th:field="*{sex}" required>
+        <option th:each="sexOption : ${sexOptions}"
+                th:value="${sexOption}"
+                th:text="${sexOption.name()}">
+        </option>
+    </select>
+    <br/>
+
+    <p th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></p>
+
+    <label for="pays">Plage de N°:</label>
+    <select id="pays" th:field="*{pays}" name="pays">
+        <option value="">-- All --</option>
+        <option value="+261">Madagascar</option>
+        <option value="+1">US</option>
+        <option value="+33">France</option>
+    </select>
+    <button type="button" onclick="updatePhoneNumber()">Add Phone number</button>
+    <br/>
+
+    <label for="address">Address:</label>
+    <input type="text" id="address" th:field="*{address}" required>
+    <br/>
+
+<!--    <label for="photo">Identity Photo:</label>
+    <input type="file" id="photo" name="photo" th:field="*{image}">
+    <br/>-->
+
+    <label for="phoneNbr">Phone Number:</label>
+        <li th:each="phone, phoneIndex : ${newEmployee.phoneNumbers}">
+             <input type="text" id="phoneNbr" th:field="${newEmployee.phoneNumbers[__${phoneIndex.index}__].id}" hidden>
+             <input type="text" th:field="*{phoneNumbers[__${phoneIndex.index}__].number}" required>
+                 <p style="color: red" th:if="${phoneError}" class="cinError" th:text="${phoneError}"></p>
+            <label>
+                <div id="phoneInputsContainer">
+                </div>
+            </label>
+        </li>
+    <button type="button" onclick="addPhoneNumber()">Add Phone number</button>
+
+    <label for="beggingDate">Hiring Date:</label>
+    <input type="date" id="beggingDate" th:value="*{formattedBeggingDate}" required pattern="yyyy-MM-dd"/>
+    <br/>
+
+    <label for="outDate">Departure Date:</label>
+    <input type="date" id="outDate" th:value="*{formattedOutDate}" pattern="yyyy-MM-dd"/>
+    <br/>
+
+    <label for="emailPerso">Personal Email:</label>
+    <input type="email" id="emailPerso" th:field="*{emailPerso}" required>
+    <br/>
+
+    <label for="emailPro">Professional Email:</label>
+    <input type="email" id="emailPro" th:field="*{emailPro}" required>
+    <br/>
+
+    <label for="nbrChildren">Number of Children:</label>
+    <input type="number" id="nbrChildren" th:field="*{nbrChildren}" required>
+    <br/>
+
+    <label for="socioPro">Socio-Professional Category:</label>
+    <input type="text" th:field="${newEmployee.cateSocioPro.id}" hidden>
+    <input type="text" id="socioPro" th:field="*{cateSocioPro.categories}" required>
+    <br/>
+
+    <label for="post">Posts:</label>
+    <input type="text" id="post" th:field="*{post}"/>
+    <br/>
+
+    <button type="submit">Update</button>
+
+</form>
+</body>
+<script>
+    function updatePhoneNumber() {
+        var phoneInputsContainer = document.getElementById("phoneInputsContainer");
+        var inputNumber = document.createElement("input");
+        inputNumber.type = "text";
+        inputNumber.name = "phoneNbr";
+        inputNumber.required = true;
+        phoneInputsContainer.appendChild(inputNumber);
+    }
+    function addPhoneNumber() {
+        var phoneInputsContainer = document.getElementById("phoneInputsContainer");
+        var inputNumber = document.createElement("input");
+        inputNumber.type = "text";
+        inputNumber.name = "phoneNbr";
+        inputNumber.setAttribute("th:field","*{phoneNumbers[__${phoneIndex.index}__].number}");
+        inputNumber.required = true;
+        phoneInputsContainer.appendChild(inputNumber);
+    }
+</script>
+</html>

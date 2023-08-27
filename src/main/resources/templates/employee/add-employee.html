@@ -1,0 +1,152 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <title>Add Employee</title>
+    <link rel="stylesheet" th:href="@{/style.css}" >
+    <link rel="stylesheet" th:href="@{/profileCss.css}" >
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@100&display=swap" rel="stylesheet">
+</head>
+<body>
+<div th:replace="/index"></div>
+<h1>Add Employee</h1>
+ <!-- <div class="form-page" style="display: block;"> -->
+    <form th:object="${employee}" th:action="@{/employees/add}" method="post" enctype="multipart/form-data">
+
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" th:field="*{firstName}" required/>
+        <br/>
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" th:field="*{lastName}" required/>
+        <br/>
+
+        <label for="dateOfBirth">Date of Birth:</label>
+        <input type="date" id="dateOfBirth" th:field="*{dateOfBirth}" required pattern="yyyy-MM-dd"/>
+        <br/>
+
+        <label for="sex">Sex:</label>
+        <select id="sex" th:field="*{sex}" required>
+            <option th:each="sexOption : ${sexOptions}"
+                    th:value="${sexOption}"
+                    th:text="${sexOption.name()}">
+            </option>
+        </select>
+        <br/>
+
+          <p style="color: red" th:if="${errorMessage}" class="error-message" th:text="${errorMessage}"></p>
+
+        <label for="phoneNumber">Plage de N°:</label>
+        <select id="phoneNumber" th:field="*{pays}" name="phoneNumber">
+            <option value="">-- All --</option>
+            <option value="+261">Madagascar</option>
+            <option value="+1">US</option>
+            <option value="+33">France</option>
+        </select>
+
+        <label for="phoneNbr">Phone Number:</label>
+        <input type="text" id="phoneNbr" th:field="*{phoneNbr}" required>
+        <button type="button" onclick="addPhoneNumber()">Add Phone number</button>
+        <p style="color: red" th:if="${phoneError}" class="cinError" th:text="${phoneError}"></p>
+        <div id="phoneSelectsContainer">
+            <p style="color: red" th:if="${phoneError}" class="cinError" th:text="${phoneError}"></p>
+        </div>
+        <div id="phoneInputsContainer">
+        </div>
+        <br/>
+
+        <label for="address">Address:</label>
+        <input type="text" id="address" th:field="*{address}" required>
+        <br/>
+
+        <label for="photo">Identity Photo:</label>
+        <input type="file" id="photo" name="photo" th:field="*{photo}">
+        <br/>
+
+        <label for="beggingDate">Hiring Date:</label>
+          <input type="date" id="beggingDate" th:field="*{beggingDate}" required pattern="yyyy-MM-dd"/>
+        <br/>
+
+       <label for="outDate">Departure Date:</label>
+        <input type="date" id="outDate" th:field="*{outDate}" pattern="yyyy-MM-dd"/>
+        <br/>
+
+        <label for="emailPerso">Personal Email:</label>
+        <input type="email" id="emailPerso" th:field="*{emailPerso}" required>
+        <br/>
+
+        <label for="emailPro">Professional Email:</label>
+        <input type="email" id="emailPro" th:field="*{emailPro}" required>
+        <br/>
+
+        <label for="nbrChildren">Number of Children:</label>
+        <input type="number" id="nbrChildren" th:field="*{nbrChildren}" required>
+        <br/>
+
+        <label for="socioPro">Socio-Professional Category:</label>
+        <select id="socioPro" th:field="*{socioProCat}" required>
+            <option value="">-- Select Socio-Professional Category --</option>
+            <option th:each="socioProOption : ${suggestedSocioProOptions}"
+                    th:value="${socioProOption?.categories}"
+                    th:text="${socioProOption?.categories}">
+            </option>
+        </select>
+        <br/>
+
+
+        <label for="cin">National Card:</label>
+        <input type="text" id="cin" th:field="*{cinNumber}" required>
+        <br/>
+
+        <p style="color: red" th:if="${cnapsError}" class="cinError" th:text="${cnapsError}"></p>
+
+        <label for="cinPlace">National Card Place:</label>
+        <input type="text" id="cinPlace" th:field="*{cinPlace}" required>
+        <br/>
+
+        <label for="cinDate">National Card Date:</label>
+        <input type="date" id="cinDate" th:field="*{cinDate}" pattern="yyyy-MM-dd"/>
+        <br/>
+
+        <label for="post">Posts:</label>
+        <input type="text" id="post" th:field="*{post}" required>
+        <br/>
+
+        <button type="submit">Add</button>
+    </form>
+
+</body>
+<script>
+    function addPhoneNumber() {
+        addPhoneNumberSelect();
+        var phoneInputsContainer = document.getElementById("phoneInputsContainer");
+        var inputNumber = document.createElement("input");
+        inputNumber.type = "text";
+        inputNumber.name = "phoneNbr";
+        inputNumber.required = true;
+        phoneInputsContainer.appendChild(inputNumber);
+    }
+    function addPhoneNumberSelect() {
+        var phoneSelectsContainer = document.getElementById("phoneSelectsContainer");
+        var selectPhoneNumber = document.createElement("select");
+        selectPhoneNumber.id = "phoneNumber";
+        selectPhoneNumber.name = "phoneNumber";
+        var optionAll = document.createElement("option");
+        optionAll.value = "";
+        optionAll.text = "-- All --";
+        var optionMadagascar = document.createElement("option");
+        optionMadagascar.value = "+261";
+        optionMadagascar.text = "Madagascar";
+        var optionFrance = document.createElement("option");
+        optionFrance.value = "+33";
+        optionFrance.text = "France";
+        selectPhoneNumber.appendChild(optionAll);
+        selectPhoneNumber.appendChild(optionMadagascar);
+        selectPhoneNumber.appendChild(optionFrance);
+        phoneSelectsContainer.appendChild(selectPhoneNumber);
+    }
+
+</script>
+</html>
