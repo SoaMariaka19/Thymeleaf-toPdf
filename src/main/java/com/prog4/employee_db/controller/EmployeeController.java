@@ -1,5 +1,7 @@
 package com.prog4.employee_db.controller;
 
+import com.lowagie.text.DocumentException;
+import com.prog4.employee_db.controller.converter.ConvertIntoPDF;
 import com.prog4.employee_db.controller.mapper.EmployeeMapper;
 import com.prog4.employee_db.controller.model.ModelEmployee;
 import com.prog4.employee_db.entity.*;
@@ -11,16 +13,29 @@ import com.prog4.employee_db.service.validator.PhoneValidator;
 import com.prog4.employee_db.repository.BusinessRepository;
 import com.prog4.employee_db.repository.EmployeeRepository;
 import com.prog4.employee_db.repository.PhoneNumberRepository;
+import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.AllArgsConstructor;
+import org.springframework.core.io.InputStreamResource;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.data.domain.Sort;
 import org.springframework.data.jpa.domain.Specification;
+import org.springframework.http.HttpHeaders;
+import org.springframework.http.HttpStatusCode;
+import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.*;
+import org.xhtmlrenderer.pdf.ITextRenderer;
+
+import static org.springframework.http.MediaType.APPLICATION_PDF;
+import static org.springframework.http.MediaType.APPLICATION_PDF_VALUE;
+
+import java.io.ByteArrayInputStream;
+import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.rmi.ServerException;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -32,7 +47,7 @@ public class EmployeeController {
     private final EmployeeService employeeService;
     private final EmployeeRepository repository;
     private final MapDTOService mapDTOService;
-    private final PhoneNumberRepository phoneNumberRepository;
+    private final ConvertIntoPDF converter;
     private final BusinessRepository businessRepository;
     private SocioProService socioProService;
     private EmployeeMapper mapper;
@@ -145,7 +160,7 @@ public class EmployeeController {
         Business business1 = new Business();
         model.addAttribute("business",business.isEmpty() ? business1 : business.get(0));
         ModelEmployee modelEmployee = mapDTOService.getByEndToEndId(employeeId);
-        Employee employee = mapper.toEntity(modelEmployee);
+        Employee employee = mapper.toUpdate(modelEmployee);
         DateTimeFormatter formatter = DateTimeFormatter.ofPattern("yyyy-MM-dd");
         employee.setFormattedBeggingDate(employee.getBeggingDate().format(formatter));
         if(employee.getOutDate() != null){
@@ -154,6 +169,12 @@ public class EmployeeController {
         else{
             employee.setFormattedOutDate("");
         }
+        if(employee.getDateOfBirth() != null){
+            employee.setBirthDay(employee.getDateOfBirth().format(formatter));
+        }
+        else{
+            employee.setBirthDay("");
+        }
         model.addAttribute("newEmployee", employee);
         return "employee/update-employee";
     }
@@ -161,7 +182,7 @@ public class EmployeeController {
     @PostMapping("/update")
     public String updateEmployee(@ModelAttribute("newEmployee") Employee employee) throws IOException {
         ModelEmployee employee1 = mapDTOService.getByEndToEndId(employee.getId());
-        Employee employee2 = mapper.toEntity(employee1);
+        Employee employee2 = mapper.toUpdate(employee1);
         Employee emp = employeeService.save(employee2);
         return "redirect:/employees/" + emp.getId();
     }
@@ -194,6 +215,17 @@ public class EmployeeController {
                 );
             }
         }
+    }
+    @GetMapping(value = "/{id}/asPdf", produces = APPLICATION_PDF_VALUE)
+    public ResponseEntity<byte[]> toPdf(@PathVariable("id") Long employeeId) throws ServerException {
+        ModelEmployee employee = mapDTOService.getByEndToEndId(employeeId);
+        byte[] pdfCardAsBytes = converter.getPdfCard(employee);
+
+        HttpHeaders headers = new HttpHeaders();
+        headers.setContentType(APPLICATION_PDF);
+        headers.setContentDispositionFormData("attachment", "employee.csv");
+        headers.setContentLength(pdfCardAsBytes.length);
+        return new ResponseEntity<>(pdfCardAsBytes, headers, HttpStatusCode.valueOf(200));
     }
 
 }

@@ -73,4 +73,31 @@ public class EmployeeMapper {
                 .address(employee.getAddress())
                 .build();
     }
+    public Employee toUpdate(ModelEmployee employee) throws IOException {
+        SocioPro socioPro = socioProService.getByCategory(employee.getSocioProCat());
+        socioPro.setCategories(employee.getSocioProCat());
+        List<PhoneNumber> phoneNbrs = new ArrayList<>();
+        for (String number : employee.getPhoneNbr()) {
+            PhoneNumber number1 = phoneNumberRepository.findPhoneNumbersByNumber(number);
+            phoneNbrs.add(number1);
+        }
+
+        return Employee.builder()
+                .id(employee.getId())
+                .dateOfBirth(employee.getDateOfBirth())
+                .beggingDate(employee.getBeggingDate())
+                .pays(employee.getPays())
+                .cateSocioPro(socioPro)
+                .firstName(employee.getFirstName())
+                .lastName(employee.getLastName())
+                .emailPerso(employee.getEmailPerso())
+                .emailPro(employee.getEmailPro())
+                .phoneNumbers(phoneNbrs)
+                .outDate(employee.getOutDate())
+                .sex(employee.getSex())
+                .post(employee.getPost())
+                .nbrChildren(employee.getNbrChildren())
+                .address(employee.getAddress())
+                .build();
+    }
 }

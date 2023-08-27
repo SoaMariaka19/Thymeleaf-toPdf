@@ -2,7 +2,7 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/.idea/Thymeleaf-toPdf.iml" filepath="$PROJECT_DIR$/.idea/Thymeleaf-toPdf.iml" />
+      <module fileurl="file://$PROJECT_DIR$/.idea/modules/prog4.main.iml" filepath="$PROJECT_DIR$/.idea/modules/prog4.main.iml" />
     </modules>
   </component>
 </project>

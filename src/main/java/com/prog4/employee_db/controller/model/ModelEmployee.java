@@ -17,6 +17,7 @@ public class ModelEmployee {
     private Long id;
     private String lastName;
     private String firstName;
+    private int age;
     private BigDecimal salary;
     private LocalDate dateOfBirth;
     private Sex sex;

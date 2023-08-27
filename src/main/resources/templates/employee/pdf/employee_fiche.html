@@ -1,0 +1,61 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8"/>
+    <title>Employee File</title>
+    <link rel="stylesheet" th:href="@{/profileCss.css}" />
+    <link rel="stylesheet" th:href="@{/style.css}" />
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin=""/>
+    <link rel="preconnect" href="https://fonts.googleapis.com"/>
+    <link rel="preconnect" href="https://fonts.gstatic.com"/>
+</head>
+<body>
+<div class="content">
+    <div class="title">
+        <h1 th:text="${employee.firstName}"></h1>
+        <img class="employee_image" th:src="'data:image/jpeg;base64,' + ${employee.photo}" alt="Aucune image" />
+    </div>
+    <div class="first-container">
+        <p><span class="attribute">Prénom : </span><span th:text="${employee.firstName}"></span></p>
+        <p><span class="attribute">Nom : </span><span th:text="${employee.lastName}"></span></p>
+        <p><span class="attribute">Date de naissance : </span><span th:text="${employee.dateOfBirth}"></span></p>
+        <p><span class="attribute">Sexe  : </span><span th:text="${employee.sex}"></span></p>
+        <p><span class="attribute">Registration Number : </span><span th:text="${employee.registrationNbr}"></span></p>
+        <p><span class="attribute">Numéro de Tel: </span></p>
+        <ul>
+            <li th:each="phone: ${employee.phoneNbr}">
+                <span th:text="|${phone}|"></span>
+            </li>
+        </ul>
+        <p><span class="attribute">Enfants  : </span><span th:text="${employee.nbrChildren}"></span></p>
+    </div>
+    <div class="second-container">
+        <p><span class="attribute">Poste  : </span>
+            <span th:text="${employee.post}"></span>
+        </p>
+        <p><span class="attribute">Email professionnel  : </span>
+            <span th:text="${employee.emailPro}"></span>
+        </p>
+        <p><span class="attribute">Email personnel  : </span>
+            <span th:text="${employee.emailPerso}"></span>
+        </p>
+        <p><span class="attribute">Date d'arrivée : </span>
+            <span th:text="${employee.beggingDate}"></span>
+        </p>
+        <p><span class="attribute">Date de sortie : </span>
+            <span th:text="${employee.outDate}"></span>
+        </p>
+        <p><span class="attribute">Catégorie socio-Pro : </span>
+            <span th:text="${employee.socioProCat}"></span>
+        </p>
+        <p><span class="attribute">N° CIN: </span>
+            <span th:text="${employee.cinNumber}"></span>
+        </p>
+        <p><span class="attribute">N° CNaps : </span>
+            <span th:text="${employee.nbrCnaps}"></span>
+        </p>
+    </div>
+</div>
+</body>
+</html>

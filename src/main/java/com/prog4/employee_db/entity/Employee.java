@@ -1,5 +1,6 @@
 package com.prog4.employee_db.entity;
 
+import com.prog4.employee_db.controller.converter.ConvertAge;
 import jakarta.persistence.*;
 import lombok.*;
 import org.springframework.format.annotation.DateTimeFormat;
@@ -53,9 +54,12 @@ public class Employee {
     @OneToMany
     private List<PhoneNumber> phoneNumbers;
 
+    @Transient
+    private int age;
     @PrePersist
     public void generatedRegistrationNbr(){
         this.registrationNbr = "EMP-" + UUID.randomUUID();
+        age = ConvertAge.exactAge(this.getDateOfBirth(), null);
     }
 
     // to update form
@@ -63,5 +67,7 @@ public class Employee {
     private String formattedBeggingDate;
     @Transient
     private String formattedOutDate;
+    @Transient
+    private String birthDay;
 }
 
