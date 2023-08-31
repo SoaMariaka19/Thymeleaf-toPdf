@@ -46,11 +46,11 @@
     <p><span class="attribute">Sexe  : </span><span th:text="${employee.sex}"></span></p>
     <p><span class="attribute">Registration Number : </span><span th:text="${employee.registrationNbr}"></span></p>
     <p><span class="attribute">Numéro de Tel: </span>
-      <ul>
-          <li th:each="phone: ${employee.phoneNbr}">
-            <span th:text="|${phone}|"></span>
-          </li>
-      </ul>
+    <ul>
+      <li th:each="phone: ${employee.phoneNbr}">
+        <span th:text="|${phone}|"></span>
+      </li>
+    </ul>
     <p><span class="attribute">Enfants  : </span><span th:text="${employee.nbrChildren}"></span></p>
   </div>
   <div class="second-container">
@@ -61,8 +61,8 @@
     <p><span class="attribute">Date de sortie : </span><span th:text="${employee.outDate}"></span></p>
     <p><span class="attribute">Catégorie socio-Pro : </span><span th:text="${employee.socioProCat}"></span></p>
     <p><span class="attribute">N° CIN: </span><span th:text="${employee.cinNumber}"></span></p>
-    <p><span class="attribute">Salaire: </span><span th:text="${employee.salary}"></span></p>
-      <p><span class="attribute" th:if="${employee.nbrCnaps != null}">N° CNaps : </span><span th:text="${employee.nbrCnaps}"></span></p>
+    <p><span class="attribute">Salaire: </span><span th:text="${employee.salary}"></span> Ariary/mois</p>
+    <p><span class="attribute" th:if="${employee.nbrCnaps != null}">N° CNaps : </span><span th:text="${employee.nbrCnaps}"></span></p>
   </div>
 </div>
 </body>

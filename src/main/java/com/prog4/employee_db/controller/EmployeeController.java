@@ -36,6 +36,7 @@ import java.io.ByteArrayOutputStream;
 import java.io.IOException;
 import java.io.PrintWriter;
 import java.rmi.ServerException;
+import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
 
@@ -120,25 +121,25 @@ public class EmployeeController {
             @ModelAttribute("employee") ModelEmployee modelEmployee,
             Model modelError
     ) throws IOException {
-       try{
-           if(validator.checkIfAlphanumeric(modelEmployee.getCinNumber())){
-               for(String number : modelEmployee.getPhoneNbr()){
-                   if(!phoneValidator.phoneCheck(number)){
-                       modelError.addAttribute("phoneError","phone number size must be equal 10");
-                       return "employee/add-employee";
-                   }
-               }
-               Employee employee = mapper.toEntity(modelEmployee);
-               employeeService.save(employee);
-               return "redirect:/employees/" + employee.getId();
-           }
+        try{
+            if(validator.checkIfAlphanumeric(modelEmployee.getCinNumber())){
+                for(String number : modelEmployee.getPhoneNbr()){
+                    if(!phoneValidator.phoneCheck(number)){
+                        modelError.addAttribute("phoneError","phone number size must be equal 10");
+                        return "employee/add-employee";
+                    }
+                }
+                Employee employee = mapper.toEntity(modelEmployee);
+                employeeService.save(employee);
+                return "redirect:/employees/" + employee.getId();
+            }
             modelError.addAttribute("cnapsError","cnaps number must be alphanumeric only [a-zA-Z0-9]");
             return "employee/add-employee";
-       }
-       catch (DataIntegrityViolationException ex) {
-           modelError.addAttribute("errorMessage", "Registration number must be unique.");
-           return "employee/add-employee";
-       }
+        }
+        catch (DataIntegrityViolationException ex) {
+            modelError.addAttribute("errorMessage", "Registration number must be unique.");
+            return "employee/add-employee";
+        }
     }
 
 
@@ -183,6 +184,8 @@ public class EmployeeController {
     public String updateEmployee(@ModelAttribute("newEmployee") Employee employee) throws IOException {
         ModelEmployee employee1 = mapDTOService.getByEndToEndId(employee.getId());
         Employee employee2 = mapper.toUpdate(employee1);
+        employee2.setBirthDay(employee.getBirthDay());
+        employee2.setDateOfBirth(LocalDate.parse(employee.getBirthDay()));
         Employee emp = employeeService.save(employee2);
         return "redirect:/employees/" + emp.getId();
     }
@@ -228,4 +231,25 @@ public class EmployeeController {
         return new ResponseEntity<>(pdfCardAsBytes, headers, HttpStatusCode.valueOf(200));
     }
 
-}
+    public ResponseEntity<InputStreamResource> getPdf(@PathVariable("id") Long employeeId,
+                                                      @RequestParam(value = "b_interval",required = false) String birthDayInterval,
+                                                      @RequestParam(value = "mode", required = false) AgeCalculationMode mode,
+                                                      HttpServletRequest request, HttpServletResponse response) throws DocumentException {
+        ModelEmployee modelEmployee = mapDTOService.getByEndToEndId(employeeId);
+
+        int calculatedAge = 0;
+        if (mode.equals(BIRTHDAY)) {
+            calculatedAge = CalculateAge.calculateAgeAtExactBirthday(modelEmployee.getDateOfBirth(), null);
+        } else if (mode == YEAR_ONLY) {
+            calculatedAge = LocalDate.now().getYear() - modelEmployee.getDateOfBirth().getYear();
+        } else if (mode == CUSTOM_DELAY) {
+            LocalDate calculationDate = LocalDate.now().minusDays(Integer.parseInt(birthDayInterval));
+            calculatedAge = CalculateAge.calculateAgeAtExactBirthday(modelEmployee.getDateOfBirth(), calculationDate);
+        }
+
+        modelEmployee.setAge(calculatedAge);
+
+        String parsedHtml = toPDF.parseEmployeeInfoTemplate(modelEmployee, request, response);
+
+
+    }
